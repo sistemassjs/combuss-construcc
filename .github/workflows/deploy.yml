@@ -1,47 +1,56 @@
-name: Deploy Ionic Angular App to GoDaddy
+name: Desplegar a GoDaddy
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
+
+concurrency:
+  group: deploy-produccion-motiv-front
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   build-and-deploy:
+    name: Compilar y publicar
     runs-on: ubuntu-latest
-
-    env:
-      FTP_SERVER: ${{ secrets.FTP_SERVER }}
-      FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-      FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-      FTP_PORT: ${{ secrets.FTP_PORT }}
-
     steps:
-      - name: 🧾 Checkout del código
-        uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v5
 
-      - name: ⚙️ Configurar Node.js v22.17
-        uses: actions/setup-node@v4
+      - name: Node.js 22
+        uses: actions/setup-node@v5
         with:
-          node-version: "22.17"
+          node-version: 22
+          cache: npm
 
-      - name: 📦 Instalar dependencias
+      - name: Instalar dependencias
         run: npm ci
 
-      - name: 🏗️ Construir aplicación Ionic Angular (producción)
+      - name: Compilar producción
         run: npm run build:prod
 
-      - name: 🚀 Desplegar en GoDaddy (FTP)
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: Publicar www/ por FTP
+        uses: nick-fields/retry@v4
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_PORT: ${{ secrets.FTP_PORT }}
         with:
-          server: ${{ env.FTP_SERVER }}
-          username: ${{ env.FTP_USERNAME }}
-          password: ${{ env.FTP_PASSWORD }}
-          port: ${{ env.FTP_PORT }}
-          protocol: ftp
-          local-dir: ./www/
-          server-dir: /
-          exclude: |
-            **/.git*
-            **/node_modules/**
-            **/.github/**
+          timeout_minutes: 20
+          max_attempts: 3
+          retry_wait_seconds: 45
+          command: |
+            npx --yes @samkirkland/ftp-deploy \
+              --server "$FTP_SERVER" \
+              --username "$FTP_USERNAME" \
+              --password "$FTP_PASSWORD" \
+              --local-dir "./www/" \
+              --server-dir "/" \
+              --protocol ftp \
+              --port "$FTP_PORT" \
+              --timeout 60000 \
+              --dangerous-clean-slate true
