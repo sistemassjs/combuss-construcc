@@ -1,6 +1,7 @@
 // src/app/services/rendimiento.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 export interface RendItem {
   fecha_carga: string;
@@ -31,8 +32,7 @@ export interface RendResponse {
 
 @Injectable({ providedIn: 'root' })
 export class RendimientoService {
-  private base = 'https://apicons.ddns.net:8093/api';
-  //private base = '/api'; // ajusta si usas proxy o ruta distinta
+  private base = environment.apiUrl || 'https://api.rorisafe.com/motiv/api';
 
   constructor(private http: HttpClient) {}
 

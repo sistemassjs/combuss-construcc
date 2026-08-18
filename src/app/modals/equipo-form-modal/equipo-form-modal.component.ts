@@ -20,6 +20,7 @@ import {
   Operador,
   Unidad,
 } from 'src/app/services/catalogo.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-equipo-form-modal',
@@ -41,9 +42,7 @@ export class EquipoFormModalComponent implements OnInit {
   previewUrl: string | null = null;
   qrData = ''; 
   clave  = '';
-  imagenBaseUrl = 'https://apicons.ddns.net:8093'; // sin `/api`
-  //imagenBaseUrl = 'http://appconstruc.test'; // sin `/api`
-  //imagenBaseUrl = 'http://192.168.100.6:8000';
+  imagenBaseUrl = environment.apiHost || 'https://api.rorisafe.com/motiv';
   estados = ['ACTIVO', 'INACTIVO', 'TALLER', 'BAJA'];
 
   obras = [

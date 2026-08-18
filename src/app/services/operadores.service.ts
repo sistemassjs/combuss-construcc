@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 export interface Operador {
   id: number;
@@ -13,10 +14,7 @@ export interface Operador {
 @Injectable({ providedIn: 'root' })
 export class OperadorService {
   private http = inject(HttpClient);
-  private baseUrl = 'https://apicons.ddns.net:8093/api/operadors'; // Cambia esto si tu backend tiene otra URL
-  //private baseUrl = 'http://appconstruc.test/api'; // Cambia esto si tu backend tiene otra URL
-  //private baseUrl = '/api/users'; // Cambia esto si tu backend tiene otra URL
-  //private baseUrl = `${environment.apiUrl}/users`;
+  private baseUrl = `${environment.apiUrl || 'https://api.rorisafe.com/motiv/api'}/operadors`;
 
   list(): Observable<Operador[]> {
     return this.http.get<Operador[]>(this.baseUrl, this.getOperadorHeaders());

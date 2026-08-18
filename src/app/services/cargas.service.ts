@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 export interface Carga {
   id?: number;
@@ -31,11 +32,7 @@ export interface CargasResponse {
 
 @Injectable({ providedIn: 'root' })
 export class CargasService {
-  private base = 'https://apicons.ddns.net:8093/api'; // AJUSTA
-  //private base = 'http://appconstruc.test/api';
-  //private base = '/api';
-  
-  //private base = 'http://192.168.100.6:8000/api';
+  private base = environment.apiUrl || 'https://api.rorisafe.com/motiv/api';
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 

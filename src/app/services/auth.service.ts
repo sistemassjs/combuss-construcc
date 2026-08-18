@@ -3,6 +3,7 @@ import { Injectable, NgZone, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 
 export interface AuthUser {
@@ -19,9 +20,7 @@ export class AuthService {
   private http = inject(HttpClient);
   private zone = inject(NgZone);
 
-  private baseUrl = 'https://apicons.ddns.net:8093/api'; // Cambia esto si tu backend tiene otra URL
-  //private baseUrl = 'http://appconstruc.test/api'; // Cambia esto si tu backend tiene otra URL
-  //private baseUrl = '/api'; // Cambia esto si tu backend tiene otra URL
+  private baseUrl = environment.apiUrl || 'https://api.rorisafe.com/motiv/api';
   public loggedIn$ = new BehaviorSubject<boolean>(!!localStorage.getItem('token'));
   isLoggedIn$(): Observable<boolean> {
     return this.loggedIn$.asObservable();

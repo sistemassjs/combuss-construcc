@@ -3,7 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false   // útil si usas cookies
+  production: false,
+  apiUrl: 'https://api.rorisafe.com/motiv/api',
+  apiHost: 'https://api.rorisafe.com/motiv',
 };
 
 /*

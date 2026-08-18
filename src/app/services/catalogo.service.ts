@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http'; // ✅ esto es esencial
 import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
 import { Equipo } from '../models/equipo.models';
+import { environment } from 'src/environments/environment';
 
 export interface TipoEquipo {
   id: number;
@@ -29,9 +30,7 @@ export interface Obras {
   providedIn: 'root',
 })
 export class CatalogoService {
-  private baseUrl = 'https://apicons.ddns.net:8093/api'; // Cambia esto si tu backend tiene otra URL
-  //private baseUrl = 'http://appconstruc.test/api'; // Cambia esto si tu backend tiene otra URL
-  //private baseUrl = 'api'; // Cambia esto si tu backend tiene otra URL
+  private baseUrl = environment.apiUrl || 'https://api.rorisafe.com/motiv/api';
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 

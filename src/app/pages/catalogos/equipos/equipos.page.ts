@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CatalogoService } from 'src/app/services/catalogo.service';
+import { environment } from 'src/environments/environment';
 import { EquipoFormModalComponent } from '../../../modals/equipo-form-modal/equipo-form-modal.component';
 import {
   AlertController,
@@ -15,9 +16,7 @@ import {
 })
 export class EquiposPage implements OnInit {
   equipos: any[] = [];
-  imagenBaseUrl = 'https://apicons.ddns.net:8093'; // sin /api
-  //imagenBaseUrl = 'http://appconstruc.test'; // sin /api
-  //imagenBaseUrl = 'http://192.168.1.83:8000'; // sin /api
+  imagenBaseUrl = environment.apiHost || 'https://api.rorisafe.com/motiv';
 
 
   constructor(
