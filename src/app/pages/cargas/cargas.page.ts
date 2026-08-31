@@ -19,11 +19,24 @@ export class CargasPage implements OnInit {
   loading = false;
   page = 1;
   meta?: { total: number; per_page: number; page: number };
+  showMonthPicker = false;
 
   constructor(private api: CargasService, private modalCtrl: ModalController) {}
 
+  get hasMorePages(): boolean {
+    if (!this.meta || this.meta.per_page <= 0) {
+      return false;
+    }
+    const totalPages = Math.ceil(this.meta.total / this.meta.per_page);
+    return this.page < totalPages;
+  }
+
   ngOnInit() {
     this.load();
+  }
+
+  toggleMonthPicker() {
+    this.showMonthPicker = !this.showMonthPicker;
   }
 
   load(reset = true) {
@@ -32,7 +45,6 @@ export class CargasPage implements OnInit {
       this.items = [];
     }
     this.loading = true;
-    console.log('📤 Enviando mes al backend:', this.selectedMonth);
 
     // ahora selectedMonth ya está en formato "YYYYMM"
     this.api.listByMonth(this.selectedMonth, this.page).subscribe({
@@ -55,20 +67,16 @@ export class CargasPage implements OnInit {
   onMonthChange(ev: any) {
     const v: string = ev.detail.value; // "2025-08" o "2025-08-01T00:00:00Z"
     this.selectedMonth = this.formatMonth(v); // lo convertimos a "YYYYMM"
+    this.showMonthPicker = false;
     this.load(true);
   }
 
-  loadMore(ev: any) {
-    if (!this.meta) {
-      ev.target.complete();
+  loadMoreClick() {
+    if (!this.hasMorePages || this.loading) {
       return;
     }
-    const totalPages = Math.ceil(this.meta.total / this.meta.per_page);
     this.page++;
-    if (this.page <= totalPages) {
-      this.load(false);
-    }
-    ev.target.complete();
+    this.load(false);
   }
 
   async abrirNueva() {

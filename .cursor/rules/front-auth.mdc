@@ -1,0 +1,40 @@
+---
+description: Auth y sesión PWA MOTIV (patrón GestionPlus, sin proveedor)
+globs: "{src/app/@auth/**/*.ts,src/app/services/auth.service.ts,src/app/pages/auth/**/*.ts,src/app/app.component.ts,src/app/app-routing.module.ts,src/app/app.module.ts}"
+alwaysApply: false
+---
+
+# Auth / sesión (front)
+
+Contrato: `api-motiv/docs/context/platform-auth.md`.
+
+## Módulo `src/app/@auth/`
+
+Patrón GestionPlus **sin** contexto proveedor:
+
+| Pieza | Rol |
+|-------|-----|
+| `TokenService` / `UserLocalStorageService` | Persistencia (`motiv_auth_*` + legado `token`/`user`) |
+| `UserStoreService` | Estado reactivo hidratado al arrancar |
+| `SessionService` | `startSession` / `endSession` → `/equipos` o `/login` |
+| `AuthService` | HTTP login/logout |
+| `AuthGuard` / `NoAuthGuard` | Rutas protegidas vs login |
+| `AuthInterceptor` | Bearer automático |
+| `SessionExpiredInterceptor` | 401 autenticado → `endSession` |
+
+Imports preferidos: `from '@auth/services/…'` o `from 'src/app/@auth/…'`.  
+Fachada: `src/app/services/auth.service.ts` reexporta `AuthService` por compatibilidad.
+
+## Reglas
+
+- Al abrir la app con token válido: home (`/equipos`), no forzar login.
+- Logout: siempre `subscribe` a `AuthService.logout()` (limpia store + API).
+- No introducir `ProveedorContext` ni guards de proveedor.
+- Menú admin: `isAdmin()` es legacy; destino permisos `/me` (Pendiente API/UI).
+
+## Anti-patrones
+
+- Leer/escribir token solo en un servicio HTTP nuevo sin pasar por store/interceptor.
+- `redirectTo: 'login'` fijo en `''` ignorando sesión.
+- Logout sin suscripción.
+- Copiar OAuth / FCM / contexto proveedor de GestionPlus.

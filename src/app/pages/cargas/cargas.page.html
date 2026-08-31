@@ -6,28 +6,23 @@
     </ion-buttons>
     <ion-title>Cargas</ion-title>
     <ion-buttons slot="end">
-      <!-- Botón para abrir selector mes/año -->
-      <ion-button id="pick-month">Mes</ion-button>
+      <ion-button (click)="toggleMonthPicker()">Mes</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
 
-  <!-- Calendario en popover solo mes/año -->
-  <ion-popover trigger="pick-month" showBackdrop="true">
-  <ng-template>
-    <ion-datetime
-      presentation="month-year"
-      [value]="selectedMonth.slice(0,4) + '-' + selectedMonth.slice(4,6)" 
-      (ionChange)="onMonthChange($event)">
-    </ion-datetime>
-  </ng-template>
-</ion-popover>
-
   <ion-item lines="none">
     <ion-label>Mostrando: {{selectedMonth}}</ion-label>
   </ion-item>
+
+  <ion-datetime
+    *ngIf="showMonthPicker"
+    presentation="month-year"
+    [value]="selectedMonth.slice(0,4) + '-' + selectedMonth.slice(4,6)"
+    (ionChange)="onMonthChange($event)">
+  </ion-datetime>
 
   <ion-list *ngIf="!loading && items.length">
     <ion-item *ngFor="let c of items">
@@ -49,9 +44,11 @@
     <ion-label>No hay cargas en {{selectedMonth}}</ion-label>
   </ion-item>
 
-  <ion-infinite-scroll (ionInfinite)="loadMore($event)" threshold="100px">
-    <ion-infinite-scroll-content loadingSpinner="bubbles"></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
+  <div class="ion-text-center ion-padding" *ngIf="hasMorePages">
+    <ion-button fill="outline" (click)="loadMoreClick()" [disabled]="loading">
+      Cargar más
+    </ion-button>
+  </div>
 
   <!-- FAB Nueva -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">

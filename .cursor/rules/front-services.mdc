@@ -1,0 +1,19 @@
+---
+description: Servicios HTTP MOTIV
+globs: src/app/services/**/*.ts
+alwaysApply: false
+---
+
+# Servicios HTTP
+
+## Destino / estado
+
+- Origen de API: `environment.apiUrl`.
+- Bearer: `AuthInterceptor` (`@auth`) adjunta el token del `UserStoreService`.
+- `AuthService.getAuthHeaders()` sigue disponible por compatibilidad en servicios legacy.
+- En código **nuevo**, preferir confiar en el interceptor (no duplicar `localStorage.getItem('token')`).
+
+## Anti-patrones
+
+- Hardcodear host de API en el servicio.
+- Ignorar 401: el `SessionExpiredInterceptor` cierra sesión; no reinventar otro clear parcial.

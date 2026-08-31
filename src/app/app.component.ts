@@ -3,8 +3,7 @@ import { MenuController } from '@ionic/angular';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { Platform } from '@ionic/angular';
-import { AuthService } from './services/auth.service';
-
+import { AuthService } from './@auth/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -16,43 +15,45 @@ export class AppComponent {
   public appPages = [
     { title: 'Equipos', url: '/equipos', icon: 'construct' },
     { title: 'Cargas', url: '/cargas', icon: 'receipt' },
-    
   ];
-  public labels = [];
+  public labels: string[] = [];
 
   isAuthRoute = false;
-  private authRoutes = ['/login', '/register', '/auth/forgot'];
+  private readonly authRoutes = ['/login', '/register', '/auth/forgot'];
 
   constructor(
-    private router: Router,
-    private menu: MenuController,
-    private auth: AuthService,
-    private platform: Platform
+    private readonly router: Router,
+    private readonly menu: MenuController,
+    private readonly auth: AuthService,
+    private readonly platform: Platform
   ) {
-    // Monitorea cambios de login/logout
     this.auth.isLoggedIn$().subscribe((logged) => {
       const currentUrl = this.router.url;
-      const isAuth = this.authRoutes.some(p => currentUrl.startsWith(p));
+      const isAuth = this.authRoutes.some((p) => currentUrl.startsWith(p));
       const showMenu = logged && !isAuth;
       this.isAuthRoute = !showMenu;
-      this.menu.enable(showMenu);
+      void this.menu.enable(showMenu);
     });
 
-    // También controla el menú según la ruta
     this.router.events
-      .pipe(filter(e => e instanceof NavigationEnd))
-      .subscribe((e: any) => {
+      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+      .subscribe((e) => {
         const url = e.urlAfterRedirects || e.url;
-        const isAuth = this.authRoutes.some(p => url.startsWith(p));
+        const isAuth = this.authRoutes.some((p) => url.startsWith(p));
         this.isAuthRoute = isAuth;
-        this.menu.enable(!isAuth);
+        void this.menu.enable(!isAuth && this.auth.loggedIn$.value);
       });
   }
 
   logout() {
-    this.auth.logout();
-    this.menu.close(); // cierra el menú si estaba abierto
-    this.router.navigate(['/login'], { replaceUrl: true });
+    this.auth.logout().subscribe({
+      next: () => {
+        void this.menu.close();
+      },
+      error: () => {
+        void this.menu.close();
+      },
+    });
   }
 
   get isDesktop(): boolean {

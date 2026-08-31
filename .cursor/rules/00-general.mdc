@@ -1,0 +1,16 @@
+---
+description: Normas generales — PWA MOTIV (combuss-construcc)
+alwaysApply: true
+---
+
+# combuss-construcc — General
+
+- Proyecto: **Ionic + Angular PWA** de campo (MOTIV).
+- API: `api-motiv`. Contrato y negocio: `api-motiv/docs/context/`.
+- Textos de UI en **español**.
+- **Sesión:** módulo `src/app/@auth/` (patrón GestionPlus sin proveedor). Ver regla `front-auth.mdc`.
+- Preferir módulos/páginas existentes; no migrar a standalone/Signals “por alineación” con Colibrí sin pedido.
+- Tema/UX: respetar estilos actuales; no rediseñar.
+- **No exigir** `ng build` / compile como verificación rutinaria.
+- Referencias solo lectura: `app-colibri`, `app-proveedores`, `docs-motiv`. No modificarlos desde esta tarea.
+- Cambios invasivos (refactor total de todos los servicios HTTP de golpe): solo si el usuario lo pide.
