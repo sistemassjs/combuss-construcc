@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://api.rorisafe.com/motiv/api',
-  apiHost: 'https://api.rorisafe.com/motiv',
+  apiUrl: 'http://127.0.0.1:8000/api',
+  apiHost: 'http://127.0.0.1:8000',
 };
 
 /*

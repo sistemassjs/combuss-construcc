@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 
-/** Clave nueva (GestionPlus-style). Se lee también la clave legado `token`. */
-const TOKEN_KEY = 'motiv_auth_token';
-const LEGACY_TOKEN_KEY = 'token';
+/** Clave histórica de MOTIV (no inventar otra). */
+const TOKEN_KEY = 'token';
+/** Residuo de la migración @auth; se limpia al leer/escribir/cerrar sesión. */
+const OBSOLETE_TOKEN_KEY = 'motiv_auth_token';
 
 @Injectable({ providedIn: 'root' })
 export class TokenService {
@@ -10,19 +11,27 @@ export class TokenService {
     if (typeof localStorage === 'undefined') {
       return null;
     }
-    return (
-      localStorage.getItem(TOKEN_KEY) ?? localStorage.getItem(LEGACY_TOKEN_KEY)
-    );
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (token) {
+      localStorage.removeItem(OBSOLETE_TOKEN_KEY);
+      return token;
+    }
+    const obsolete = localStorage.getItem(OBSOLETE_TOKEN_KEY);
+    if (obsolete) {
+      localStorage.setItem(TOKEN_KEY, obsolete);
+      localStorage.removeItem(OBSOLETE_TOKEN_KEY);
+      return obsolete;
+    }
+    return null;
   }
 
   setToken(token: string): void {
     localStorage.setItem(TOKEN_KEY, token);
-    // Compatibilidad temporal con servicios que aún leen `token`
-    localStorage.setItem(LEGACY_TOKEN_KEY, token);
+    localStorage.removeItem(OBSOLETE_TOKEN_KEY);
   }
 
   removeToken(): void {
     localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(LEGACY_TOKEN_KEY);
+    localStorage.removeItem(OBSOLETE_TOKEN_KEY);
   }
 }

@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AuthUser } from '../models/auth-user.model';
 
-const USER_KEY = 'motiv_auth_user';
-const LEGACY_USER_KEY = 'user';
+/** Clave histórica de MOTIV (no inventar otra). */
+const USER_KEY = 'user';
+/** Residuo de la migración @auth; se limpia al leer/escribir/cerrar sesión. */
+const OBSOLETE_USER_KEY = 'motiv_auth_user';
 
 @Injectable({ providedIn: 'root' })
 export class UserLocalStorageService {
@@ -11,25 +13,27 @@ export class UserLocalStorageService {
       return null;
     }
     const raw =
-      localStorage.getItem(USER_KEY) ?? localStorage.getItem(LEGACY_USER_KEY);
+      localStorage.getItem(USER_KEY) ?? localStorage.getItem(OBSOLETE_USER_KEY);
     if (!raw) {
       return null;
     }
     try {
-      return JSON.parse(raw) as AuthUser;
+      const user = JSON.parse(raw) as AuthUser;
+      localStorage.setItem(USER_KEY, raw);
+      localStorage.removeItem(OBSOLETE_USER_KEY);
+      return user;
     } catch {
       return null;
     }
   }
 
   setUser(user: AuthUser): void {
-    const serialized = JSON.stringify(user);
-    localStorage.setItem(USER_KEY, serialized);
-    localStorage.setItem(LEGACY_USER_KEY, serialized);
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    localStorage.removeItem(OBSOLETE_USER_KEY);
   }
 
   removeUser(): void {
     localStorage.removeItem(USER_KEY);
-    localStorage.removeItem(LEGACY_USER_KEY);
+    localStorage.removeItem(OBSOLETE_USER_KEY);
   }
 }

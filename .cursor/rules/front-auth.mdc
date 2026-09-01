@@ -14,7 +14,7 @@ Patrón GestionPlus **sin** contexto proveedor:
 
 | Pieza | Rol |
 |-------|-----|
-| `TokenService` / `UserLocalStorageService` | Persistencia (`motiv_auth_*` + legado `token`/`user`) |
+| `TokenService` / `UserLocalStorageService` | Persistencia en `token` / `user` |
 | `UserStoreService` | Estado reactivo hidratado al arrancar |
 | `SessionService` | `startSession` / `endSession` → `/equipos` o `/login` |
 | `AuthService` | HTTP login/logout |
