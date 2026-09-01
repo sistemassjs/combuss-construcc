@@ -11,9 +11,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
-    "serve": "ionic serve",
-    "assets:icons": "node scripts/generate-icons.mjs",
-    "assets:generate": "npm run assets:icons && npx @capacitor/assets generate --iconBackgroundColor \"#000000\" --splashBackgroundColor \"#121212\""
+    "serve": "ionic serve"
   },
   "private": true,
   "dependencies": {
@@ -77,8 +75,6 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "sharp": "^0.35.4",
-    "to-ico": "^1.1.5",
     "typescript": "~5.8.0"
   },
   "description": "An Ionic project"
