@@ -1,10 +1,10 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Login</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="ion-padding login-page">
+  <div class="login-brand">
+    <img src="assets/img/logo.png" alt="Motive" class="app-logo-login" />
+    <h1>Motive</h1>
+    <p>Iniciar sesión</p>
+  </div>
 
-<ion-content class="ion-padding">
   <div class="form-wrapper">
     <!-- Campos trampa -->
     <input type="text" name="fakeuser" autocomplete="username" style="display:none;">
@@ -21,7 +21,6 @@
         <ion-input type="password" name="login_custom_password" autocomplete="new-password" [(ngModel)]="password"
           required></ion-input>
       </ion-item>
-
 
       <ion-button expand="block" type="submit" class="ion-margin-top">
         Iniciar sesión

@@ -49,3 +49,23 @@ ion-content {
 ion-content::part(scroll) {
   padding-bottom: 100px; /* ajusta si quieres */
 }
+
+/* Logo en header (lado derecho) */
+ion-buttons[slot='end'] .app-logo-header-end,
+ion-toolbar > .app-logo-header-end {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  margin-inline-end: 10px;
+  align-self: center;
+}
+
+ion-buttons[slot='end'] {
+  align-items: center;
+}
+
+.app-logo-login {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+}
